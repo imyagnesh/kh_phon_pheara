@@ -1,8 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import App from './State';
+import TodoApp from './TodoApp';
+import './rootStyle.css';
 
-ReactDOM.render(
-  <App text="Hello" desc="Labore non id id reprehenderit qui." />,
-  document.getElementById('root'),
-);
+ReactDOM.render(<TodoApp />, document.getElementById('root'));
