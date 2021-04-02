@@ -1,53 +1,45 @@
-import React, { PureComponent, createRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import TodoHeader from './TodoHeader';
 import TodoForm from './TodoForm';
 import TodoList from './TodoList';
 import TodoFilter from './TodoFilter';
 import './style.css';
 
-export default class TodoApp extends PureComponent {
-  static propTypes = {};
+const TodoApp = () => {
+  const [isFetching, setIsFetching] = useState(false);
+  const [isCreating, setIsCreating] = useState(false);
+  const [isUpdating, setIsUpdating] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [todoList, setTodoList] = useState([]);
+  const [filterType, setFilterType] = useState('all');
+  const [hasError, setHasError] = useState(false);
+  const todoInput = useRef();
 
-  todoInput = createRef();
-
-  state = {
-    isFetching: false,
-    isCreating: false,
-    isUpdating: false,
-    isDeleting: false,
-    todoList: [],
-    filterType: 'all',
-    hasError: false,
+  const fetchData = async () => {
+    try {
+      setIsFetching(true);
+      const res = await fetch('http://localhost:3000/todoList');
+      const list = await res.json();
+      setTodoList(list);
+    } catch (error) {
+      setHasError(error);
+    } finally {
+      setIsFetching(false);
+    }
   };
 
-  async componentDidMount() {
-    try {
-      this.setState({ isFetching: true });
-      const res = await fetch('http://localhost:3000/todoList');
-      const todoList = await res.json();
-      this.setState({ todoList });
-    } catch (error) {
-      this.setState({ hasError: error });
-    } finally {
-      this.setState({ isFetching: false });
-    }
-  }
+  useEffect(() => {
+    fetchData();
+  }, []);
 
-  static getDerivedStateFromError(error) {
-    return {
-      hasError: error,
-    };
-  }
-
-  onSubmit = async (event) => {
+  const onSubmit = async (event) => {
     try {
-      this.setState({ isCreating: true });
+      setIsCreating(true);
       event.preventDefault();
-      const { todoList } = this.state;
       const {
         current: { value },
-      } = this.todoInput;
-      this.todoInput.current.value = '';
+      } = todoInput;
+      todoInput.current.value = '';
       const res = await fetch('http://localhost:3000/todoList', {
         method: 'POST',
         headers: {
@@ -60,21 +52,18 @@ export default class TodoApp extends PureComponent {
         }),
       });
       const newTodo = await res.json();
-
-      this.setState({
-        todoList: [...todoList, newTodo],
-        filterType: 'all',
-      });
+      setTodoList([...todoList, newTodo]);
+      setFilterType('all');
     } catch (error) {
-      this.setState({ hasError: error });
+      setHasError(error);
     } finally {
-      this.setState({ isCreating: false });
+      setIsCreating(false);
     }
   };
 
-  completeTodo = async (todo) => {
+  const completeTodo = async (todo) => {
     try {
-      this.setState({ isUpdating: todo });
+      setIsUpdating(todo);
       const res = await fetch(`http://localhost:3000/todoList/${todo.id}`, {
         method: 'PUT',
         headers: {
@@ -86,7 +75,6 @@ export default class TodoApp extends PureComponent {
 
       const updatedTodo = await res.json();
 
-      const { todoList } = this.state;
       const index = todoList.findIndex((x) => x.id === todo.id);
 
       const updatedTodoList = [
@@ -94,76 +82,59 @@ export default class TodoApp extends PureComponent {
         updatedTodo,
         ...todoList.slice(index + 1),
       ];
-      // const updatedTodoList = todoList.map((item) => {
-      //   if (item.id === todo.id) {
-      //     return { ...item, isDone: !item.isDone };
-      //   }
-      //   return item;
-      // });
-      this.setState({ todoList: updatedTodoList });
+      setTodoList(updatedTodoList);
     } catch (error) {
-      this.setState({ hasError: error });
+      setHasError(error);
     } finally {
-      this.setState({ isUpdating: false });
+      setIsUpdating(false);
     }
   };
 
-  deleteTodo = async (todo) => {
-    const { isDeleting } = this.state;
+  const deleteTodo = async (todo) => {
     try {
-      this.setState({ isDeleting: Array.isArray(isDeleting) ? [...isDeleting, todo] : [todo] });
+      setIsDeleting(Array.isArray(isDeleting) ? [...isDeleting, todo] : [todo]);
       await fetch(`http://localhost:3000/todoList/${todo.id}`, {
         method: 'DELETE',
       });
-      const { todoList } = this.state;
       const index = todoList.findIndex((x) => x.id === todo.id);
       const updatedTodoList = [...todoList.slice(0, index), ...todoList.slice(index + 1)];
-      this.setState({ todoList: updatedTodoList });
+      setTodoList(updatedTodoList);
     } catch (error) {
-      this.setState({ hasError: error });
+      setHasError(error);
     } finally {
-      this.setState({ isDeleting: isDeleting.filter((x) => x.id !== todo.id) });
+      setIsDeleting(isDeleting.filter((x) => x.id !== todo.id));
     }
   };
 
-  filterTodo = (filterType) => {
-    this.setState({ filterType });
+  const filterTodo = (filter) => {
+    setFilterType(filter);
   };
 
-  render() {
-    console.log('Todo App');
-    const {
-      todoList,
-      filterType,
-      hasError,
-      isFetching,
-      isCreating,
-      isUpdating,
-      isDeleting,
-    } = this.state;
-    if (hasError) {
-      return <h1>Something went wrong... Please try after sometime</h1>;
-    }
-    return (
-      <div className="container">
-        <TodoHeader />
-        <TodoForm onSubmit={this.onSubmit} todoInput={this.todoInput} disabled={isCreating} />
-        {isFetching ? (
-          <div className="todoListContainer">
-            <h1>Loading...</h1>
-          </div>
-        ) : (
-          <TodoList
-            todoList={todoList}
-            filterType={filterType}
-            completeTodo={this.completeTodo}
-            deleteTodo={this.deleteTodo}
-            isDeleting={isDeleting}
-            isUpdating={isUpdating}
-          />
-        )}
-        <TodoFilter filterTodo={this.filterTodo} />
-      </div>
-    );
+  if (hasError) {
+    return <h1>Something went wrong.... Please try again</h1>;
   }
-}
+
+  return (
+    <div className="container">
+      <TodoHeader />
+      <TodoForm onSubmit={onSubmit} todoInput={todoInput} disabled={isCreating} />
+      {isFetching ? (
+        <div className="todoListContainer">
+          <h1>Loading...</h1>
+        </div>
+      ) : (
+        <TodoList
+          todoList={todoList}
+          filterType={filterType}
+          completeTodo={completeTodo}
+          deleteTodo={deleteTodo}
+          isDeleting={isDeleting}
+          isUpdating={isUpdating}
+        />
+      )}
+      <TodoFilter filterTodo={filterTodo} />
+    </div>
+  );
+};
+
+export default TodoApp;
