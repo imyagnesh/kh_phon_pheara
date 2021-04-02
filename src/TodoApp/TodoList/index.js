@@ -1,6 +1,6 @@
 import React from 'react';
 
-const index = ({ todoList, filterType, completeTodo, deleteTodo }) => {
+const index = ({ todoList, filterType, completeTodo, deleteTodo, isDeleting, isUpdating }) => {
   console.log('todoList');
   return (
     <div className="todoListContainer">
@@ -20,8 +20,11 @@ const index = ({ todoList, filterType, completeTodo, deleteTodo }) => {
             <span style={{ textDecoration: todo.isDone ? 'line-through' : 'none' }}>
               {todo.text}
             </span>
-            <button type="button" onClick={() => deleteTodo(todo)}>
-              Delete
+            <button
+              type="button"
+              onClick={() => deleteTodo(todo)}
+              disabled={isDeleting && isDeleting.some(x => x.id === todo.id)}>
+              {isDeleting && isDeleting.some(x => x.id === todo.id) ? 'Deleting' : 'Delete'}
             </button>
           </div>
         ))}

@@ -2,9 +2,9 @@ import React, { createRef } from 'react';
 import PropTypes from 'prop-types';
 
 // follwing scenario we can use class component
-// 1. Data manipulation
-// 2. to use life cycle methods
-// 3. if you want to use state data
+// 1. Data manipulation -> using hooks you can manipulate data in function conmponet as well
+// 2. to use life cycle methods -> we can use lifecycle method in FC
+// 3. if you want to use state data -> we can use state data in FC
 
 // life cycle methods
 // 1. Mounting
