@@ -35,6 +35,7 @@ module.exports = {
   devServer: {
     contentBase: path.join(__dirname, 'bundle'),
     compress: true,
-    port: 9000,
+    port: 8081,
+    historyApiFallback: true,
   },
 };

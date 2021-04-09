@@ -1,0 +1,13 @@
+.form-input {
+    display: flex;
+    flex-direction: column;
+    max-width: 20rem;
+    padding: 10px 0;
+}
+
+.error {
+    color: red;
+    font-size: 12px;
+    font-weight: 300;
+    line-height: 18px;
+}

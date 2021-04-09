@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
-import TodoApp from './TodoApp';
+// import TodoApp from './TodoApp';
+// import Chart from './Chart';
+import ShoppingCart from './ShoppingCart';
 import './rootStyle.css';
 
 // const App = () => {
@@ -47,4 +49,4 @@ import './rootStyle.css';
 //   );
 // };
 
-ReactDOM.render(<TodoApp />, document.getElementById('root'));
+ReactDOM.render(<ShoppingCart />, document.getElementById('root'));

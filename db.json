@@ -10,5 +10,53 @@
       "isDone": false,
       "id": 4
     }
+  ],
+  "products": [
+    {
+      "id": 1,
+      "productName": "Iphone",
+      "productPrice": 60000,
+      "currency": "INR",
+      "quantities": 10,
+      "productType": "Mobile"
+    },
+    {
+      "id": 2,
+      "productName": "ipod",
+      "productPrice": 80000,
+      "currency": "INR",
+      "quantities": 10,
+      "productType": "tablet"
+    },
+    {
+      "id": 3,
+      "productName": "note 9",
+      "productPrice": 40000,
+      "currency": "INR",
+      "quantities": 1,
+      "productType": "mobile"
+    },
+    {
+      "id": 4,
+      "productName": "IPad",
+      "productPrice": 700000,
+      "currency": "INR",
+      "quantities": 2,
+      "productType": "tablet"
+    }
+  ],
+  "productTypes": [
+    {
+      "id": 1,
+      "type": "Mobile"
+    },
+    {
+      "id": 2,
+      "type": "Laptop"
+    },
+    {
+      "id": 3,
+      "type": "Tablet"
+    }
   ]
 }

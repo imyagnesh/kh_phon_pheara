@@ -11,9 +11,12 @@
     "start": "webpack serve --open"
   },
   "dependencies": {
+    "formik": "^2.2.6",
     "prop-types": "^15.7.2",
     "react": "^17.0.2",
-    "react-dom": "^17.0.2"
+    "react-dom": "^17.0.2",
+    "react-router-dom": "^5.2.0",
+    "victory": "^35.4.13"
   },
   "devDependencies": {
     "@babel/core": "^7.13.14",
